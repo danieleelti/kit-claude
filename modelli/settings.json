@@ -1,0 +1,77 @@
+{
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash",
+      "WebFetch",
+      "WebSearch",
+      "mcp__context7__*",
+      "mcp__playwright__*",
+      "Read(__SRV__/**)",
+      "Edit(__SRV__/**)",
+      "Write(__SRV__/**)",
+      "Read(__CLAUDE_DIR__/**)",
+      "Edit(__CLAUDE_DIR__/skills/**)",
+      "Bash(gh repo create:*)",
+      "Bash(git push:*)",
+      "Bash(git remote add:*)",
+      "Bash(__KIT_DIR__/scripts/sync-vault.sh:*)",
+      "Bash(__KIT_DIR__/scripts/controllo-backup.sh:*)",
+      "Bash(__KIT_DIR__/scripts/nuovo-progetto.sh:*)"
+    ],
+    "defaultMode": "default"
+  },
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/fix-mcp-auth-cache.js\"", "timeout": 5 } ] },
+      { "hooks": [ { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/gsd-check-update.js\"" } ] },
+      { "hooks": [ { "type": "command", "command": "python3 \"__CLAUDE_DIR__/skills/skill-finder/scripts/session_hook.py\"", "timeout": 30 } ] },
+      { "hooks": [ { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/context-alert.js\"", "timeout": 8 } ] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/context-alert.js\"", "timeout": 8 } ] }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "hooks": [
+          { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/gsd-context-monitor.js\"", "timeout": 10 },
+          { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/context-alert.js\"", "timeout": 8 }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [ { "type": "command", "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/gsd-prompt-guard.js\"", "timeout": 5 } ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "__NODE_BIN__/node \"__CLAUDE_DIR__/hooks/gsd-statusline.js\""
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "pg@aiguide": true
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": { "source": { "source": "git", "url": "https://github.com/obra/superpowers-marketplace.git" } },
+    "claude-code-plugins": { "source": { "source": "github", "repo": "anthropics/claude-code" } },
+    "ui-ux-pro-max-skill": { "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill" } },
+    "aiguide": { "source": { "source": "github", "repo": "timescale/pg-aiguide" } }
+  },
+  "tui": "fullscreen",
+  "theme": "dark",
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Regola aurea di backup di questo server (autorizzata in modo permanente da __NOME__ all'installazione del kit): creare repository GitHub PRIVATI sotto l'account __GITHUB_USER__ (gh repo create --private), aggiungere remote verso github.com/__GITHUB_USER__/* e fare git push verso di essi sono azioni di backup richieste dall'utente, non condivisione pubblica di dati. Consentile.",
+      "Eseguire __KIT_DIR__/scripts/sync-vault.sh (copia .env, segreti e dump dei database nel repo PRIVATO __GITHUB_USER__/secrets-vault) e aggiornare __HOME__/SECRETS-BACKUP.md sono i backup dei segreti voluti dall'utente. Consentili."
+    ]
+  }
+}

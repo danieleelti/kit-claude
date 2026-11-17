@@ -1,0 +1,60 @@
+# Vhost nginx per la CloudCLI (server «normale» con nginx di sistema + certbot). Sostituire __DOMINIO__, __PORTA_CLOUDCLI__,
+# __PORTA_ANTEPRIMA__. Metterlo in /etc/nginx/sites-available/cloudcli.conf, link in sites-enabled, poi:
+#   nginx -t && systemctl reload nginx
+#   certbot --nginx -d __DOMINIO__          (aggiunge da solo le righe ssl_certificate e il redirect 80→443)
+# Password dell'anteprima: htpasswd -c /etc/nginx/anteprima.htpasswd <utente>   (pacchetto apache2-utils)
+#   oppure: printf '%s:%s\n' utente "$(openssl passwd -apr1)" > /etc/nginx/anteprima.htpasswd
+# Se nginx dà «duplicate map $connection_upgrade», un'altra configurazione definisce già la map: togliere le 4 righe sotto.
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    server_name __DOMINIO__;
+    location /.well-known/acme-challenge/ { root /var/www/html; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name __DOMINIO__;
+    # ssl_certificate e ssl_certificate_key li scrive certbot (--nginx). Se li metti a mano:
+    # ssl_certificate     /etc/letsencrypt/live/__DOMINIO__/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/__DOMINIO__/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 200m;
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # App in prova: avviata sulla porta __PORTA_ANTEPRIMA__ (legata a 127.0.0.1), protetta da password.
+    location /anteprima/ {
+        auth_basic "Anteprima";
+        auth_basic_user_file /etc/nginx/anteprima.htpasswd;
+        proxy_pass http://127.0.0.1:__PORTA_ANTEPRIMA__/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 3600s;
+    }
+
+    # CloudCLI: websocket per chat e terminale, timeout lunghi, niente buffering.
+    location / {
+        proxy_pass http://127.0.0.1:__PORTA_CLOUDCLI__;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_buffering off;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+}

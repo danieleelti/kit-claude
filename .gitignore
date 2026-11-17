@@ -1,13 +1,14 @@
-node_modules/
+kit.env
 .env
 .env.*
 !.env.example
+!kit.env.esempio
 *.db
 *.sqlite
 *.sqlite3
-.next/
-dist/
+node_modules/
 __pycache__/
+*.pyc
 .venv/
 *.log
 .DS_Store
