@@ -1,6 +1,6 @@
 # Kit Claude — note per Claude (lato Daniele)
 
-- Cartella `/opt/app/workspace/claudecodeui/srv/kit-claude` (= `/root/claudecodeui/srv/kit-claude`): dentro il backup Elestio. Repo privato `danieleelti/kit-claude`, branch `main`.
+- Cartella `/opt/app/workspace/claudecodeui/srv/kit-claude` (= `/root/claudecodeui/srv/kit-claude`): dentro il backup Elestio. Repo **PUBBLICO** `danieleelti/kit-claude` (scelta di Daniele del 17/11/2026, deroga alla regola «repo sempre privati»), branch `main`: dentro mai segreti, dati di clienti o riferimenti privati; `costruisci-kit.sh` controlla le chiavi, il controllo finale è di chi committa.
 - Valgono le regole globali di `/root/.claude/CLAUDE.md` (regola aurea: commit + push frequenti; qui non ci sono segreti e non devono entrarci).
 - Cos'è: il pacchetto per replicare lo stack di Daniele (skill, hook, CLAUDE.md, settings, CloudCLI, nginx, vault) sul server di un'altra persona, con il suo GitHub, dominio e abbonamento. Creato il 17/11/2026 (Fable) per il server di un amico di Daniele. Il documento per il Claude dell'altro server è `ISTRUZIONI-PER-CLAUDE.md`; il resto del repo è ciò che quel documento cita.
 - Deriva dalla sandbox di Francesca (`/root/claudecodeui/srv/francesca`: spec, piano, modelli e script), ma senza isolamento: l'utente è padrone del suo server.
@@ -12,7 +12,7 @@
 - Gli script di `scripts/` sono generici (leggono `kit.env`); provati qui solo a secco (`installa-kit.sh` in una home finta, `nuovo-progetto.sh --senza-github`, `sync-vault.sh --prova`, `controllo-backup.sh`): sul server dell'amico li collauda il suo Claude.
 
 ## Come si consegna
-- Daniele sceglie: zip del repo (GitHub → Code → Download ZIP) caricato sul server dell'amico; oppure amico collaboratore del repo privato; oppure repo pubblico (non contiene segreti né dati di Daniele, solo skill di terzi open source e modelli con segnaposto).
+- Repo pubblico dal 17/11/2026: il Claude dell'amico fa `git clone https://github.com/danieleelti/kit-claude.git ~/kit-claude` e legge `ISTRUZIONI-PER-CLAUDE.md`. Prompt da passare: «Clona https://github.com/danieleelti/kit-claude in ~/kit-claude e segui ISTRUZIONI-PER-CLAUDE.md dall'inizio, partendo dalle domande della §1».
 - All'altro Claude basta `ISTRUZIONI-PER-CLAUDE.md`: §1 domande all'utente, §4 installazione in ordine, §4.9 collaudo.
 
 ## Da dove ripartire

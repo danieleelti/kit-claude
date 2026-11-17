@@ -9,4 +9,4 @@ vault dei segreti). Nato il 17/11/2026 per il server di un amico di Daniele, a p
 
 - `claude/` è generato da `costruisci-kit.sh` sul server di Daniele (segnaposto `__HOME__`, `__CLAUDE_DIR__`, `__NODE_BIN__`, `__NOME__`); `claude/ELENCO.md` elenca le skill.
 - `modelli/`, `scripts/`, `nginx/`: modelli e script parametrizzati da `kit.env` (copia di `kit.env.esempio`).
-- Repo privato `danieleelti/kit-claude`, cartella `/root/claudecodeui/srv/kit-claude` (backup Elestio). Nessun segreto dentro: `costruisci-kit.sh` si ferma se ne trova uno.
+- Repo **pubblico** `danieleelti/kit-claude` (dal 17/11/2026). Nessun segreto dentro: `costruisci-kit.sh` si ferma se ne trova uno. Per usarlo: `git clone https://github.com/danieleelti/kit-claude.git ~/kit-claude` e poi `ISTRUZIONI-PER-CLAUDE.md`. Le skill in `claude/skills` sono di terzi, ciascuna con la propria licenza (origini in `claude/ELENCO.md`).

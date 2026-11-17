@@ -69,9 +69,12 @@ suoi account di questi servizi, si aggiungono con `claude mcp add` e le sue chia
 
 ## 3. Il kit: dove sta e com'è fatto
 
-Il kit è il repository `kit-claude` di Daniele (privato). Arriva in uno di questi modi, lo decide Daniele: (a) uno zip
-caricato sul server dell'utente; (b) l'utente viene aggiunto come collaboratore e tu fai `git clone`; (c) Daniele lo
-rende pubblico. Scompattalo o clonalo in `KIT_DIR` (consiglio: `$HOME/kit-claude`). Se il kit **non** c'è, vai alla §8.
+Il kit è il repository **pubblico** https://github.com/danieleelti/kit-claude (nessun segreto dentro: skill di terzi,
+modelli con segnaposto, script). Clonalo in `KIT_DIR` (consiglio: `$HOME/kit-claude`):
+```bash
+git clone https://github.com/danieleelti/kit-claude.git $HOME/kit-claude
+```
+Per aggiornarlo in futuro: `git pull` nella stessa cartella. Se per qualche motivo non puoi clonarlo, vai alla §8.
 
 ```
 kit-claude/
@@ -185,9 +188,8 @@ aggiungi il pattern allo script e dillo all'utente.
 ### 4.8 Chiudere il CLAUDE.md
 Compila la sezione **«Ambiente di questo server»** in fondo a `~/.claude/CLAUDE.md` con quello che hai trovato davvero
 (sistema, proxy, porte, backup del provider, servizi esterni dell'utente). È la mappa che userai nelle prossime sessioni.
-Poi commit del kit personalizzato se l'utente lo tiene in un suo repo (consigliato: `nuovo-progetto.sh` non serve, basta
-`gh repo create <GITHUB_USER>/kit-claude --private` e push; `kit.env` e `.env.cloudcli` restano fuori da git e vanno
-nel vault, ci pensa `sync-vault.sh`).
+Il kit clonato resta collegato al repo pubblico di Daniele per i `git pull`: lì non c'è nulla da committare, i parametri
+dell'utente stanno in `kit.env` e `.env.cloudcli`, fuori da git e dentro il vault (ci pensa `sync-vault.sh`).
 
 ### 4.9 Collaudo finale (tutti verdi prima di dire «fatto»)
 1. Versioni: node, claude, cloudcli, pm2, gh come in §2.
@@ -338,7 +340,7 @@ PostToolUse che legge l'ultimo `usage` dal transcript e avvisa a 650k/850k token
 Quando tutto il collaudo (§4.9) è verde, scrivi all'utente un riepilogo breve: dove sta cosa (dominio, cartella dei
 progetti, kit, vault), cosa è stato automatizzato (cron del vault, pm2 al boot), come si lavora (brainstorming → spec →
 piano → Opus; «vai»; i due elenchi), e i due elenchi **Da fare <NOME>** / **Da fare Claude**. Poi commit e push di tutto
-ciò che è nato (kit personalizzato, progetto Benvenuto) e `controllo-backup.sh` pulito. Un file che vive solo sul server è
+ciò che è nato (progetto Benvenuto, vault) e `controllo-backup.sh` pulito. Un file che vive solo sul server è
 lavoro non finito: vale anche per il primo giorno.
 
 Buon lavoro, fratello. — Claude (Fable 5.1), server di Daniele, 17/11/2026
